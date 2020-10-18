@@ -16,7 +16,6 @@ java -jar [filename].jar -t false -f [Starting Fragment] -q [Query File]
 ## Run tests
 To run tests similar to the ones in the paper, you must run the jar file once per client you are running. Then, use the following command per client.
 ```
-java -jar [filename].jar [query directory] [method] [output directory] [number of clients] [client no.] [dataset] [load]
 java -jar [filename].jar -t true [Starting Fragment] [query directory] [method] [output dir] [number of clients] [client no.] [dataset] [load]
 ```
 
