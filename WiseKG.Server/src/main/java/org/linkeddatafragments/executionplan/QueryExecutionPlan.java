@@ -2,6 +2,7 @@ package org.linkeddatafragments.executionplan;
 
 import org.linkeddatafragments.characteristicset.ICharacteristicSet;
 import org.linkeddatafragments.config.ConfigReader;
+import org.linkeddatafragments.datasource.IDataSource;
 import org.linkeddatafragments.util.StarString;
 import org.linkeddatafragments.util.Tuple;
 import org.rdfhdt.hdt.hdt.HDT;
@@ -61,6 +62,30 @@ public class QueryExecutionPlan {
         List<ICharacteristicSet> characteristicSets = ConfigReader.getInstance().getCharacteristicSets();
         List<ICharacteristicSet> css = new ArrayList<>();
         StarString curr = operator.getStar();
+
+        Set<String> vars = subplan.getVariables();
+        long card = subplan.cardinalityEstimation();
+
+        for (ICharacteristicSet cs : characteristicSets) {
+            if (cs.matches(curr)) css.add(cs);
+        }
+
+        double size = 0;
+        for (ICharacteristicSet cs : css) {
+            size += cs.count(curr, vars, card);
+        }
+
+        return (long) size;
+    }
+
+    public long cardinalityEstimation(IDataSource dataSource) {
+        if(operator == null) return 0;
+        return dataSource.cardinalityEstimation(operator.getStar());
+    }
+
+    public static long cardinalityEstimation(StarString curr, QueryExecutionPlan subplan, IDataSource datasource) {
+        List<ICharacteristicSet> characteristicSets = ConfigReader.getInstance().getCharacteristicSets();
+        List<ICharacteristicSet> css = new ArrayList<>();
 
         Set<String> vars = subplan.getVariables();
         long card = subplan.cardinalityEstimation();
